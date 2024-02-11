@@ -8,8 +8,15 @@
                 <div class="col-md">
                     <p class="card-text headings" style="font-size: 30px; font-weight: bold;">Club: {{ approval.club.name }}</p>
                     <p class="card-text headings headings">Info: </p> <p class="font-weight-bold texts">{{ approval.ticket.info }}</p>
+                    <p class="card-text headings headings">Current status: </p> <p class="font-weight-bold texts">{{ approval.ticket.remark }}</p>
                 </div>
             </div>
+            {% if not approval.pastApproved %}
+            <p style="font-size: 24px;">needs to be approved by lower authority</p>
+            {% elif noSubmit %}
+            <p style="font-size: 24px;">already approved</p>
+                
+            {% else %}
             <form method="POST" action="">
             <div class="row">
                 <div class="col-md">
@@ -31,6 +38,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- </form>
 
             <form method="POST" action=""> -->
@@ -42,6 +50,7 @@
                 </div>
             </div>
         </form>
+        {% endif %}
 
             <div class="card border mb-3comments" style="background-color: #7da0a0; padding:15px">
                 <div class="row mt-3">
@@ -74,9 +83,11 @@
             <div class="row">
                 <div class="col-md">
                     <div class="insert">
-                        {{ form.comments.label(class='headings') }}
-                        {{ form.comments }}
-                        {{ form.comment_btn(class='btn btn-info') }}
+                        <form method="POST" action="">
+                        {{ form2.comments.label(class='headings') }}
+                        {{ form2.comments }}
+                        {{ form2.comment_btn(class='btn btn-info') }}
+                        </form>
                     </div>
                 </div>
             </div>
