@@ -20,7 +20,10 @@ class ApprovalForm(FlaskForm):
   remark = StringField('Remark')
   accept = SubmitField('Accept')
   decline = SubmitField('Decline')
-  comments = StringField('Comments')
+
+
+class CommentForm(FlaskForm):
+  comments = StringField('Enter Comment: ')
   comment_btn = SubmitField('Comment')
 
 
@@ -28,8 +31,3 @@ class PromoteForm(FlaskForm):
   position = SelectField('Position',
                          choices=[('clubmember', 'Member'), ('cfa', 'Club FA'), ('sfa', 'Society FA'), ('secretary', 'Secretary'), ('chairsap', 'ChairSAP'), ('deanstudents', 'Dean Students')])
   submit = SubmitField('Promote')
-
-
-class MemberApproveForm(FlaskForm):
-  accept = SubmitField('Accept')
-  decline = SubmitField('Decline')

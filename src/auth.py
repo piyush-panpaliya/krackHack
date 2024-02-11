@@ -1,7 +1,7 @@
 from flask import Blueprint, session, url_for, redirect, request
 from .models import User, Society, Club
 from . import db, google
-
+import os
 
 auth = Blueprint('auth', __name__)
 
@@ -15,7 +15,8 @@ def login():
   if request.args.get("level", None):
     session['id'] = request.args.get("id")
   session['level'] = request.args.get("level")
-  return google.authorize_redirect(url_for('auth.authorize', _external=True, _scheme='http'))
+  s = 'https' if os.environ.get('ENV', 'dev') == 'prod' else 'http'
+  return google.authorize_redirect(url_for('auth.authorize', _external=True, _scheme=s))
 
 
 @auth.route('/authorize')
@@ -25,30 +26,30 @@ def authorize():
   user = User.query.filter_by(oauth_id=user_info['sub']).first()
   print(user_info['email'])
   if not user:
-    # try:
-    if session.get('id'):
-      if session.get('level') in ["sec", "sfa"]:
-        society = Society.query.filter_by(id=int(session["id"])).first()
-        print(society.id)
-        user = User(oauth_id=user_info['sub'],
-                    email=user_info['email'], approved=False, level=session["level"], society_id=society.id)
-        db.session.add(user)
+    try:
+      if session.get('id'):
+        if session.get('level') in ["sec", "sfa"]:
+          society = Society.query.filter_by(id=int(session["id"])).first()
+          print(society.id)
+          user = User(oauth_id=user_info['sub'],
+                      email=user_info['email'], approved=False, level=session["level"], society_id=society.id)
+          db.session.add(user)
+        else:
+          club = Club.query.filter_by(id=int(session["id"])).first()
+          user = User(oauth_id=user_info['sub'],
+                      email=user_info['email'], approved=False, level=session["level"], club_id=int(session["id"]), club=club)
+          print(user)
+          db.session.add(user)
       else:
-        club = Club.query.filter_by(id=int(session["id"])).first()
         user = User(oauth_id=user_info['sub'],
-                    email=user_info['email'], approved=False, level=session["level"], club_id=int(session["id"]), club=club)
-        print(user)
+                    approved=False, level=session["level"], email=user_info['email'])
         db.session.add(user)
-    else:
-      user = User(oauth_id=user_info['sub'],
-                  approved=False, level=session["level"])
-      db.session.add(user)
-    db.session.commit()
-    # except:
-    #   db.session.rollback()
-    #   session.pop('level', None)
-    #   session.pop('user', None)
-    #   return redirect(url_for('views.home'))
+      db.session.commit()
+    except:
+      db.session.rollback()
+      session.pop('level', None)
+      session.pop('user', None)
+      return redirect(url_for('views.home'))
 
   session['user'] = {
       'id': user.id,

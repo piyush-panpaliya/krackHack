@@ -2,7 +2,7 @@ from . import db
 from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for, session
 from . import login_required
 from .models import User, Comment, Club, Society, Approval, Ticket
-from .forms import TicketForm, ApprovalForm, PromoteForm, MemberApproveForm
+from .forms import TicketForm, ApprovalForm, CommentForm
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -14,8 +14,8 @@ def getApproval(amount, budgetUsed):
   if amount < 15000 and 15000 - budgetUsed >= amount:
     return ["sec", "sfa", "cfa"]
   elif amount < 50000 or 15000 - budgetUsed < amount:
-    return ["sec", "sfa", "cfa", "csap"]
-  return ["sec", "sfa", "cfa", "csap", "dean"]
+    return ["sec", "cfa", "sfa", "csap"]
+  return ["sec", "cfa", "sfa", "csap", "dean"]
 
 
 views = Blueprint('views', __name__)
@@ -63,45 +63,58 @@ def approveTicket(id):
     return redirect('/logout')
 
   approval = Approval.query.filter_by(ticket_id=id, level=user.level).first()
+  print(approval)
   if not approval or approval.level != user.level:
     return redirect('/approve')
+  noSubmit = False
+  if approval.remark and approval.remark.split(":")[0] in ["ACCEPTED", "DECLINED"]:
+    noSubmit = True
   form = ApprovalForm()
+
+  commentform = CommentForm()
+  if request.method == 'POST' and commentform.is_submitted() and commentform.data["comment_btn"]:
+    print(commentform.data, "cmnt formmmmm")
+    comment = commentform.data["comments"]
+    try:
+      comment = Comment(ticket=approval.ticket, user=user, text=comment)
+      db.session.add(comment)
+      db.session.commit()
+      return redirect("/approve/" + str(approval.ticket_id))
+    except:
+      db.session.rollback()
+      return render_template('approve.html', approval=ticket, error="Error in adding comment")
+
   if request.method == "POST" and form.is_submitted():
-    if not form.data["comment_btn"]:
-      if not approval.pastApproved:
-        return render_template('approve.html', form=form, approval=approval, error="Ticket not approved at lower level")
-      status = form.data["accept"]
-      remark = form.data["remark"]
-      print("dadawdwwwwwwwwwwwwwww", status, remark)
-      try:
-        approval.status = status
-        approval.remark = remark
-        if status == True:
-          if approval.level == approval.upto:
-            approval.ticket.status = True
-          else:
-            nextLevel = level[level.index(approval.level) + 1]
-            nextApproval = Approval.query.filter_by(
-                ticket=approval.ticket, level=nextLevel).first()
-            nextApproval.pastApproved = True
-        db.session.commit()
-      except Exception as e:
-        db.session.rollback()
-        print(e)
-        return render_template('approve.html', approval=approval, error="Error in approving ticket")
-    else:
-      comment = form.data["comments"]
-      try:
-        comment = Comment(ticket=approval.ticket, user=user, text=comment)
-        db.session.add(comment)
-        db.session.commit()
-        return redirect('/approve/' + id)
-      except:
-        db.session.rollback()
-        return render_template('approve.html', approval=ticket, error="Error in adding comment")
-    return redirect("/approve/" + str(approval.id))
+    if not approval.pastApproved:
+      return render_template('approve.html', form=form, approval=approval, error="Ticket not approved at lower level")
+    status = form.data["accept"]
+    remark = form.data["remark"]
+    try:
+      approval.status = status
+      ticket = Ticket.query.filter_by(id=id).first()
+      if status == True:
+        approval.remark = 'ACCEPTED: ' + remark
+        ticket.remark = "approved by " + user.level
+        if approval.level == approval.upto:
+          approval.ticket.status = True
+        else:
+          nextLevel = level[level.index(approval.level) + 1]
+          nextApproval = Approval.query.filter_by(
+              ticket=approval.ticket, level=nextLevel).first()
+          nextApproval.pastApproved = True
+      else:
+        approval.remark = 'DECLINED: ' + remark
+        ticket.remark = "declined by" + user.level
+
+      db.session.commit()
+    except Exception as e:
+      db.session.rollback()
+      print(e)
+      return render_template('approve.html', approval=approval, error="Error in approving ticket")
+    return redirect("/approve/" + str(approval.ticket_id))
+
   comments = Comment.query.filter_by(ticket_id=id).all()
-  return render_template('approve.html', approval=approval, comments=comments, form=form, stylesheet=url_for('static', filename='approval.css'))
+  return render_template('approve.html', approval=approval, comments=comments, noSubmit=noSubmit, form=form, form2=commentform, stylesheet=url_for('static', filename='approval.css'))
 
 
 @views.route('/approve', methods=['GET', 'POST'])
@@ -188,10 +201,13 @@ def tickets():
                       info=info, priority=priority)
       db.session.add(ticket)
       if user.level == "sec":
+        approvals = Approval(ticket=ticket, status=False,
+                             level="sec", club=club, upto=approvalsFrom[-1], pastApproved=True, remark="ACCEPTED: Approved by sec")
+        ticket.remark = "ACCEPTED: Approved by sec"
         approvalsFrom.remove("sec")
       for approvalBy in approvalsFrom:
         approvals = Approval(ticket=ticket, status=False,
-                             level=approvalBy, club=club, upto=approvalsFrom[-1], pastApproved=(approvalBy == "sec"))
+                             level=approvalBy, club=club, upto=approvalsFrom[-1], pastApproved=approvalsFrom.index(approvalBy) == 0)
         db.session.add(approvals)
 
       db.session.commit()
@@ -214,18 +230,23 @@ def tickets():
 
 
 @views.route('/admin/approve-user', methods=['GET', 'POST'])
-@login_required("admin")
+@login_required(["admin"])
 def approveUser():
   user = session['user']
-  if request.method == 'POST':
+  user = User.query.filter_by(id=user["id"]).first()
+  user.approved = True
+  if request.method == 'POST' and user.level == "admin":
     try:
       user_id = request.form['id']
+      approve = request.form['approved'] == 'true'
       user = User.query.filter_by(id=user_id).first()
-      user.approved = True
+      user.approved = approve
       db.session.commit()
     except Exception as e:
+      print(e)
       db.session.rollback()
     return redirect('/admin/approve-user')
 
-  users = User.query.filter_by(approved=False).all()
+  users = User.query.filter(User.approved == False,
+                            User.level != 'admin').all()
   return render_template('approve-user.html', users=users)

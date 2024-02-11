@@ -1,0 +1,102 @@
+{% extends 'layout.html' %} {% block content %}
+
+<div class="container">
+	<div class="card border">
+		<div class="card-body" style="background-color: #7da0a0">
+			<div class="row" style="background-color: transparent">
+				<div class="col-md abcd">
+					<p
+						class="card-text headings"
+						style="
+							font-size: 30px;
+							font-weight: bolder;
+							color: white;
+							background-color: transparent;
+						"
+					>
+						APPROVAL PAGE
+					</p>
+				</div>
+			</div>
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th scope="col">LEVEL</th>
+						<th scope="col">CLUB</th>
+						<th scope="col">EMAIL</th>
+						<th scope="col">ACCEPT/DECLINE</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for member in users %}
+					<tr>
+						<th scope="row">{{ member.level }}</th>
+						<td>{{ member.club }}</td>
+						<td>{{ member.email }}</td>
+						<td>
+							<form
+								id="approvalForm"
+								method="POST"
+								action="/admin/approve-user"
+							>
+								<button
+									type="button"
+									class="btn btn-secondary accept"
+									onclick="submitForm(true)"
+								>
+									Approve
+								</button>
+								<button
+									type="button"
+									class="btn btn-secondary decline"
+									onclick="submitForm(false)"
+								>
+									Decline
+								</button>
+								<input type="hidden" id="approvalField" name="approved" />
+								<input
+									type="hidden"
+									id="approvalField"
+									name="id"
+									value="{{ member.id }}"
+								/>
+							</form>
+
+							<script>
+								function submitForm(approval) {
+									document.getElementById('approvalField').value = approval
+									document.getElementById('approvalForm').submit()
+								}
+							</script>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<style>
+	body {
+		background-color: #0f1111;
+		margin-top: 150px;
+	}
+	.abcd {
+		display: flex;
+		background-color: transparent;
+		align-items: center;
+		justify-content: center;
+	}
+	.decline {
+		background-color: red;
+	}
+	.accept {
+		background-color: green;
+	}
+	th,
+	td {
+		text-align: center;
+	}
+</style>
+{% endblock %}
