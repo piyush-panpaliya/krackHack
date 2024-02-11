@@ -1,1 +1,0 @@
-## KrackHack flask template starter
