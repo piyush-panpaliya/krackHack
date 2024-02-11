@@ -1,0 +1,164 @@
+* {
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0;
+	border: border-box;
+	font-size: 22px;
+}
+
+body {
+	background-color: black;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	/* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* transform: 50%;
+    translate: 50%; */
+}
+
+.approval1 {
+	background-color: #7da0a0;
+	height: 450px;
+	width: 520px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	flex-direction: column;
+	padding: 0px 10px;
+}
+
+.com1 {
+	background-color: black;
+	margin-right: 10px;
+	width: 140px;
+	text-align: center;
+	color: white;
+	border-radius: 4%;
+}
+
+.info1 {
+	border-radius: 4%;
+	background-color: black;
+	color: white;
+	text-align: center;
+	width: 350px;
+}
+
+.club1 {
+	display: flex;
+	margin-bottom: 5px;
+	font-weight: 750;
+}
+
+.remark1 {
+	display: flex;
+	color: white;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	/* display: inline; */
+}
+
+.rem {
+	display: flex;
+	background-color: black;
+	justify-content: center;
+	align-items: center;
+	font-weight: 700;
+	margin-right: 10px;
+	margin-left: 43px;
+}
+
+.entry {
+	width: 350px;
+	height: 38px;
+	/* margin-left: 10px; */
+	border: none;
+	font-size: 14px;
+	text-align: center;
+	border: 1px solid black;
+}
+
+.accept {
+	margin-left: 80px;
+	margin-right: 60px;
+	background-color: green;
+}
+
+.decline {
+	background-color: red;
+}
+
+.accdec {
+	display: flex;
+	/* justify-content: space-between; */
+	/* flex-direction: row; */
+}
+
+.commentsID {
+	display: flex;
+	font-size: 12px;
+	padding-top: 18px;
+}
+
+.comments {
+	margin-top: 10px;
+	/* display: flex; */
+	font: 12px;
+}
+
+.username {
+	font-size: 12px;
+	display: flex;
+	align-items: center;
+}
+
+.display-date {
+	font-size: 10px;
+	display: flex;
+	align-items: center;
+}
+
+.com2 {
+	font-size: 18px;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	/* background-color: white; */
+}
+
+/* .abcd{
+    background-color: black;
+    width: 90%;
+} */
+
+.comButton {
+	height: 40px;
+	background-color: black;
+	color: white;
+}
+
+.headings {
+	font-size: 25;
+	font-weight: bold;
+}
+
+.texts {
+	font-size: 18;
+	font-weight: 200;
+}
+
+.accdec {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	padding: 10px 50px;
+}
+
+.insert {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 50px;
+}

@@ -29,7 +29,7 @@ def login_required(user_level):
     @wraps(view_func)
     def wrapped_view(*args, **kwargs):
       if 'user' not in session:
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('views.home'))
       user_info = session.get('user')
       if user_level == None:
         return view_func(*args, **kwargs)
