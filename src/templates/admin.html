@@ -1,0 +1,42 @@
+{% extends "layout.html" %} {% block content %}
+<form action="#">
+	<label for="name">Your Name:</label><br />
+	<input type="text" id="name" name="name" required /><br /><br />
+
+	<label for="suggestion">Society Name Suggestion:</label><br />
+	<input type="text" id="suggestion" name="suggestion" required /><br /><br />
+
+	<label for="comments">Additional Comments or Ideas:</label><br />
+	<textarea id="comments" name="comments" rows="4" cols="50"></textarea
+	><br /><br />
+
+	<input type="submit" value="Submit" />
+</form>
+<form action="#">
+	<label for="name">Your Name:</label><br />
+	<input type="text" id="name" name="name" required /><br /><br />
+
+	<label for="society">Select Society:</label><br />
+	<select id="society" name="society">
+		<option value="society1">Society 1</option>
+		<option value="society2">Society 2</option>
+		<option value="society3">Society 3</option>
+		<!-- Add more society options as needed --></select
+	><br /><br />
+
+	<label for="club_name">Club Name:</label><br />
+	<input type="text" id="club_name" name="club_name" required /><br /><br />
+
+	<label for="description">Club Description:</label><br />
+	<textarea
+		id="description"
+		name="description"
+		rows="4"
+		cols="50"
+		required
+	></textarea
+	><br /><br />
+
+	<input type="submit" value="Submit" />
+</form>
+{% endblock %}

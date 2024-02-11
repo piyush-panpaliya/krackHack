@@ -97,6 +97,8 @@ def approveTicket(id):
         ticket.remark = "approved by " + user.level
         if approval.level == approval.upto:
           approval.ticket.status = True
+          Society.query.filter_by(id=approval.ticket.club.society_id).first(
+          ).budgetUsed += approval.ticket.amount
         else:
           nextLevel = level[level.index(approval.level) + 1]
           nextApproval = Approval.query.filter_by(
@@ -250,3 +252,45 @@ def approveUser():
   users = User.query.filter(User.approved == False,
                             User.level != 'admin').all()
   return render_template('approve-user.html', users=users)
+
+# adding new clubs and societies
+
+
+@views.route('/admin', methods=['GET', 'POST'])
+@login_required(["admin"])
+def admin():
+  user = session['user']
+  user = User.query.filter_by(id=user["id"]).first()
+  user.approved = True
+  # societies = ["sntc", "cult"]
+  # Tclubs = ["kp", "gdsc", "saic"]
+  # Cclubs = ["drama", "dance", "music"]
+  # for s in societies:
+  #   society = Society(name=s, budgetUsed=0)
+  #   db.session.add(society)
+  # db.session.commit()
+  # sntc = Society.query.filter_by(name="sntc").first()
+  # cult = Society.query.filter_by(name="cult").first()
+  # for c in Tclubs:
+  #   club = Club(name=c, society_id=sntc.id)
+  #   db.session.add(club)
+  #   # sntc.clubs.append(club)
+  # for c in Cclubs:
+  #   club = Club(name=c, society_id=cult.id)
+  #   db.session.add(club)
+  #   # cult.clubs.append(club)
+  # db.session.commit()
+
+  if request.method == 'POST' and user.level == "admin":
+    try:
+      user_id = request.form['id']
+      approve = request.form['approved'] == 'true'
+      user = User.query.filter_by(id=user_id).first()
+      user.approved = approve
+      db.session.commit()
+    except Exception as e:
+      print(e)
+      db.session.rollback()
+    return redirect('/admin/approve-user')
+
+  return render_template('admin.html', societies=Society.query.all())

@@ -7,6 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
 import os
 from functools import wraps
+from apscheduler.schedulers.background import BackgroundScheduler
+import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -56,6 +58,15 @@ def create_app():
 
   with app.app_context():
     db.create_all()
+    scheduler = BackgroundScheduler()
+
+    def cronCall():
+      from .models import Society
+      societies = Society.query.all()
+      for s in societies:
+        s.budgetUsed = 0
+      db.session.commit()
+    scheduler.add_job(cronCall, 'interval', hours=30 * 24, id='main')
 
   return app
 
