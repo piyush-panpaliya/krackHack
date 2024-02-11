@@ -1,0 +1,117 @@
+* {
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0;
+	border: border-box;
+}
+
+.navbar {
+	background-color: #0f1111;
+	height: 82px;
+	color: white;
+	padding: 5px 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.logo {
+	padding: 5px 10px;
+	border: 2px solid transparent;
+}
+
+.border {
+	border: 2px solid transparent;
+}
+
+.circle {
+	height: 32px;
+	width: 32px;
+	border-radius: 50%;
+	text-align: center;
+	background-color: #7da0a0;
+}
+
+.border:hover {
+	border: 2px solid orange;
+}
+
+#logo1 {
+	font-size: 26px;
+	font-weight: 700;
+	text-align: center;
+	margin: 0;
+}
+
+#logo2 {
+	font-size: 21px;
+	font-weight: 400;
+	text-align: center;
+}
+
+.navbar2 {
+	background-color: #0f1111;
+	height: 180px;
+	color: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.main-section {
+	background-color: #7da0a0;
+	height: 470px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+}
+.msg {
+	background-color: black;
+	color: white;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+	margin-top: 7px;
+	margin-bottom: 25px;
+	width: 90%;
+	/* padding-right:150px; */
+}
+
+.button1 {
+	width: 170px;
+	background-color: #7da0a0;
+	color: white;
+	margin-bottom: 5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.button2 {
+	background-color: black;
+	color: white;
+}
+
+.commentsID {
+	font-size: 20px;
+}
+
+.select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	background: white;
+	border: none;
+	border-radius: 0;
+	cursor: pointer;
+	padding: 12px;
+	font-size: 18px;
+	&:focus {
+		color: black;
+	}
+	// Hack for IE 11+
+	&::-ms-expand {
+		display: none;
+	}
+}

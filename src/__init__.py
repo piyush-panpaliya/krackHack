@@ -1,12 +1,12 @@
 
-from flask import Flask
+from flask import Flask, redirect, url_for, session
 from os import path
 import secrets
-from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
 import os
+from functools import wraps
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -24,9 +24,26 @@ google = oauth.register(
 )
 
 
+def login_required(user_level):
+  def decorator(view_func):
+    @wraps(view_func)
+    def wrapped_view(*args, **kwargs):
+      if 'user' not in session:
+        return redirect(url_for('views.home'))
+      user_info = session.get('user')
+      if user_level == None:
+        return view_func(*args, **kwargs)
+      if user_info.get('level', '') in user_level:
+        return redirect(url_for('auth.login'))
+      return view_func(*args, **kwargs)
+    return wrapped_view
+  return decorator
+
+
 def create_app():
   app = Flask(__name__)
-  app.config['SECRET_KEY'] = secrets.token_hex(20)
+  app.config['SECRET_KEY'] = 'okbhai'
+  # app.config['SECRET_KEY'] = secrets.token_hex(20)
   app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
   db.init_app(app)
   oauth.init_app(app)

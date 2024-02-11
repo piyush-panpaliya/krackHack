@@ -1,0 +1,94 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container">
+	<div class="card border">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-6">
+					<p
+						class="card-text headings"
+						style="font-size: 20px; font-weight: bold"
+					>
+						Club Name: {{ ticket.club.name }}
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<p class="card-text headings">
+						Ticket ID:
+						<span class="font-weight-bold texts">{{ ticket.id }}</span>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<p class="card-text headings" style="margin: 0px">Information:</p>
+					<p class="font-weight-bold texts" style="font-size: 18px">
+						{{ ticket.info }}
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<p class="card-text headings">
+						Amount:
+						<span class="font-weight-bold texts">{{ ticket.amount }}</span>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<p class="card-text headings">
+						Status:
+						<span class="font-weight-bold texts">{{ ticket.status }}</span>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<p class="card-text headings">
+						Remark:
+						<span class="font-weight-bold texts">{{ ticket.remark }}</span>
+					</p>
+				</div>
+			</div>
+			<div
+				class="card border mb-3comments"
+				style="background-color: #7da0a0; padding: 15px"
+			>
+				<div class="row mt-3">
+					<div class="col-md-12">
+						<p class="card-text" style="font-size: 32px; color: white">
+							Comments:
+						</p>
+						{% for comment in comments %}
+						<div class="card border mb-3">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-6">
+										<p class="card-text">
+											<strong>{{ comment.user.email }}</strong>
+										</p>
+									</div>
+									<div class="col-md-6">
+										<p class="card-text">
+											<strong>{{ comment.user.level }}</strong>
+										</p>
+									</div>
+									<div class="col-md-6">
+										<p class="card-text text-right" style="font-size: 12px">
+											<small>Date: {{ comment.date_updated }}</small>
+										</p>
+									</div>
+								</div>
+								<p class="card-text">{{ comment.text }}</p>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

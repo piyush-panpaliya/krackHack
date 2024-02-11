@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container">
+    <div class="card border">
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md">
+                    <p class="card-text headings" style="font-size: 30px; font-weight: bold;">Club: {{ approval.club.name }}</p>
+                    <p class="card-text headings headings">Info: </p> <p class="font-weight-bold texts">{{ approval.ticket.info }}</p>
+                </div>
+            </div>
+            <form method="POST" action="">
+            <div class="row">
+                <div class="col-md">
+
+
+                    <div class="form-group">
+                        {{ form.remark.label(class="form-control-label headings") }}
+    
+                        {% if form.remark.errors %}
+                            {{ form.remark(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.remark.errors %}
+                                    <span> {{error}} </span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.remark(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- </form>
+
+            <form method="POST" action=""> -->
+            <div class="row">
+                <div class="col-md">
+                <div class="accdec" >
+                    {{ form.accept(class='btn btn-secondary accept') }}
+                    {{ form.decline(class='btn btn-secondary decline') }}
+                </div>
+            </div>
+        </form>
+
+            <div class="card border mb-3comments" style="background-color: #7da0a0; padding:15px">
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <p class="card-text" style="font-size: 32px;
+                        color: white;">Comments:</p>
+                        {% for comment in comments %}
+                        <div class="card border mb-3">
+                            <div class="card-body comment-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="card-text"><strong>{{ comment.user.email }}</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="card-text"><strong>{{ comment.user.level }}</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="card-text text-right" style="font-size: 12px;"><small>Date: {{ comment.date_updated }}</small></p>
+                                    </div>
+                                </div>
+                                <p class="card-text">{{ comment.text }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                </div>
+            
+
+            <div class="row">
+                <div class="col-md">
+                    <div class="insert">
+                        {{ form.comments.label(class='headings') }}
+                        {{ form.comments }}
+                        {{ form.comment_btn(class='btn btn-info') }}
+                    </div>
+                </div>
+            </div>
+
+            </div>
+            </div>
+            </div>
+{% endblock %}

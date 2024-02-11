@@ -1,0 +1,91 @@
+{% extends "layout.html" %} {% block content %}
+<header>
+	<div class="navbar">
+		<div class="logo border">
+			<p id="logo1">EasyApproval</p>
+		</div>
+
+		<div class="sign-in">
+			<button
+				type="button border"
+				class="btn btn-primary btn-lg circle"
+			></button>
+		</div>
+	</div>
+</header>
+
+<div class="main-section">
+	<div class="msg">Sign-In / Register</div>
+	<div style="display: flex; align-items: baseline; gap: 10px">
+		<p style="font-size: 24px">select your level</p>
+		<select id="level" class="select">
+			<option value="clubmember">club member</option>
+			<option value="sec">secretary</option>
+			<option value="cfa">club FA</option>
+			<option value="sfa">society FA</option>
+			<option value="csap">chairSAP</option>
+			<option value="dean">dean Students</option>
+		</select>
+	</div>
+	<div id="clubs" style="display: flex; align-items: baseline; gap: 10px">
+		<p style="font-size: 24px">select your club</p>
+		<select id="clubS" class="select">
+			{% for club in clubs %}
+			<option value="{{ club['id'] }}">{{ club["name"] }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div id="society" style="display: none; align-items: baseline; gap: 10px">
+		<p style="font-size: 24px">select your society</p>
+		<select id="societyS" class="select">
+			{% for society in societies %}
+			<option value="{{ society['id'] }}">{{ society["name"] }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="button1">
+		<button
+			id="loginB"
+			type="button"
+			class="btn btn-outline-secondary button2 border"
+		>
+			Sign In With Google
+		</button>
+	</div>
+</div>
+<script>
+	document.getElementById('loginB').addEventListener('click', function () {
+		var select = document.querySelector('#level')
+		var level = select.value
+		if (level == 'clubmember' || level == 'cfa') {
+			var id = document.querySelector('#clubS').value
+			window.location.href = '/login?level=' + level + '&id=' + id
+			return
+		} else if (level == 'sfa' || level == 'sec') {
+			var id = document.getElementById('societyS').value
+			window.location.href = '/login?level=' + level + '&id=' + id
+			return
+		}
+		window.location.href = '/login?level=' + level
+	})
+	// show scoieties when society fa or secretary is selected
+	document.getElementById('level').addEventListener('change', function () {
+		var select = document.querySelector('#level')
+		var level = select.value
+		if (level == 'sfa' || level == 'sec') {
+			document.getElementById('clubs').style.display = 'none'
+			document.getElementById('society').style.display = 'flex'
+		} else if (level == 'clubmember' || level == 'cfa') {
+			console.log('here', level)
+			document.getElementById('clubs').style.display = 'flex'
+			document.getElementById('society').style.display = 'none'
+		} else {
+			document.getElementById('clubs').style.display = 'none'
+			document.getElementById('society').style.display = 'none'
+		}
+	})
+</script>
+<footer>
+	<div class="navbar2"></div>
+</footer>
+{% endblock %}
